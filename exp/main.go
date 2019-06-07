@@ -2,34 +2,31 @@ package main
 
 import (
 	"html/template"
-	"os"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-type Test struct {
-	Name          string
-	Description   string
-	IntValue      int64
-	FloatValue    float64
-	MultipleValue []string
-	IsLoading     bool
+var homeTemplate *template.Template
+
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	if err := homeTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
-	t, err := template.ParseFiles("hello.gohtml")
+	var err error
+	homeTemplate, err = template.ParseFiles("views/home.gohtml")
+
 	if err != nil {
 		panic(err)
-	}
-	data := Test{
-		Name: "John Smith",
-		Description: "lorem	ipsum is dfdf dfdf dfdfdfdfdfd",
-		IntValue:      2345,
-		FloatValue:    2334.232,
-		MultipleValue: []string{"one", "two", "three"},
-		IsLoading:     false,
 	}
 
-	err = t.Execute(os.Stdout, data)
-	if err != nil {
-		panic(err)
-	}
+	router := mux.NewRouter()
+	router.HandleFunc("/", home)
+
+	http.ListenAndServe(":3000", router)
+
 }
