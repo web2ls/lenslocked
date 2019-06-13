@@ -16,25 +16,16 @@ var faqView *views.View
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	must(homeView.Render(w, nil))
-	// if err := homeView.Template.ExecuteTemplate(w, homeView.Layout, nil); err != nil {
-	// 	panic(err)
-	// }
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	must(contactView.Render(w, nil))
-	// if err := contactView.Template.ExecuteTemplate(w, contactView.Layout, nil); err != nil {
-	// 	panic(err)
-	// }
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	must(faqView.Render(w, nil))
-	// if err := faqView.Template.ExecuteTemplate(w, faqView.Layout, nil); err != nil {
-	// 	panic(err)
-	// }
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +43,7 @@ func main() {
 	var err error
 	homeView = views.NewView("bootstrap", "views/home.gohtml")
 	contactView = views.NewView("bootstrap", "views/contact.gohtml")
-	faqView = views.NewView("bootstrap", "views/faq.gohtml")
+	faqView = views.NewView("secondary", "views/faq.gohtml")
 
 	if err != nil {
 		panic(err)
