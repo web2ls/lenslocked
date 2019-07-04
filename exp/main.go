@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"lenslocked/models"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
@@ -34,17 +36,32 @@ type Order struct {
 
 func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-	db, err := gorm.Open("postgres", psqlInfo)
+	us, err := models.NewUserService(psqlInfo)
 	if err != nil {
-		fmt.Println("Wrong connections to DB")
 		panic(err)
 	}
 
-	fmt.Println("Successfuly connection to DB")
-	defer db.Close()
+	defer us.Close()
+	us.DesctructiveReset()
 
-	db.LogMode(true)
-	db.AutoMigrate(&User{}, &Order{})
+	user, err := us.ByID(1)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(user)
+
+	// db, err := gorm.Open("postgres", psqlInfo)
+	// if err != nil {
+	// 	fmt.Println("Wrong connections to DB")
+	// 	panic(err)
+	// }
+
+	// fmt.Println("Successfuly connection to DB")
+	// defer db.Close()
+
+	// db.LogMode(true)
+	// db.AutoMigrate(&User{}, &Order{})
 
 	// name, email := getInfo()
 	// u := &User{
@@ -56,16 +73,16 @@ func main() {
 	// }
 	// fmt.Printf("%+v\n", u)
 
-	var firstUser User
-	db.Preload("Orders").First(&firstUser).Not(1)
-	if db.Error != nil {
-		panic(db.Error)
-	}
+	// var firstUser User
+	// db.Preload("Orders").First(&firstUser).Not(1)
+	// if db.Error != nil {
+	// 	panic(db.Error)
+	// }
 
-	// fmt.Println(firstUser)
-	fmt.Println("Email:", firstUser.Email)
-	fmt.Println("Number of orders:", len(firstUser.Orders))
-	fmt.Println("Orders:", firstUser.Orders)
+	// // fmt.Println(firstUser)
+	// fmt.Println("Email:", firstUser.Email)
+	// fmt.Println("Number of orders:", len(firstUser.Orders))
+	// fmt.Println("Orders:", firstUser.Orders)
 
 	//createOrder(db, firstUser, 1001, "Fake Description #1")
 	// createOrder(db, firstUser, 9999, "Fake Description #2")
