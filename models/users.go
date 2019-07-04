@@ -41,6 +41,10 @@ func (us *UserService) DesctructiveReset() {
 	us.db.AutoMigrate(&User{})
 }
 
+func (us *UserService) Create(user *User) error {
+	return us.db.Create(&user).Error
+}
+
 func NewUserService(connectionInfo string) (*UserService, error) {
 	db, err := gorm.Open("postgres", connectionInfo)
 	if err != nil {

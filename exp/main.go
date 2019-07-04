@@ -44,12 +44,20 @@ func main() {
 	defer us.Close()
 	us.DesctructiveReset()
 
-	user, err := us.ByID(1)
+	user := models.User{
+		Name:  "John Doe",
+		Email: "doe@mail.com",
+	}
+	if err = us.Create(&user); err != nil {
+		panic(err)
+	}
+
+	findUser, err := us.ByID(1)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(user)
+	fmt.Println(findUser)
 
 	// db, err := gorm.Open("postgres", psqlInfo)
 	// if err != nil {
